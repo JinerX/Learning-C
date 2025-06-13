@@ -3,6 +3,8 @@
 #include "CLI.h"
 #include <string.h>
 #include "converters.h"
+#include <errno.h>
+#include <limits.h>
 
 int is_valid_int(const char* str, int* val_out) {
     /*
@@ -15,22 +17,22 @@ int is_valid_int(const char* str, int* val_out) {
     // initial checks
     if (str == NULL || *str == '\0') {
         //return 0 if string is null or just end
-        return 0;
+        return -1;
     }
 
     errno = 0;
     // strtol converts string to long int, it takes char*, char pointer and base
     int val = strtol(str,&end_ptr,10);
     if (errno != 0 || val > INT_MAX || val < INT_MIN) {
-        return 0;
+        return -1;
     }
     if (*end_ptr != '\0') {
         // If not a valid number is passed strtol will not parse to the end 
-        return 0;
+        return -1;
     }
 
     *val_out = (int)val;
-    return 1;
+    return 0;
 }
 
 
@@ -68,22 +70,25 @@ void run_cli() {
         // split command into tokens
         int num_args = split_into_commands(command, commands);
         char* init_command = commands[0];
-        if (strcmp(init_command, "base")) {
-
+        if (strcmp(init_command, "base") == 0) {
+            handle_base(commands[1], &base);
         }
-        else if () {
-            /* code */
+        else if (strcmp(init_command, "exit") == 0){
+            break;
         }
-        
+        else {
+            printf("Invalid command doing nothing\n");
+        }
     }
+    printf("Exiting CLI...\n");
 }
 
 
 int handle_base(char* new_base, int* old_base) {
     int new_base_val;
     int flag = is_valid_int(new_base, &new_base_val);
-    if (flag != -1) {
-        fprintf(stderr, "Error base incorectly formatted\n");
+    if (flag == -1) {
+        fprintf(stderr, "Error base incorectly formatted, given base: %s\n", new_base);
         return -1;
     }
     if (2 > new_base_val || new_base_val > 36) {
@@ -97,7 +102,7 @@ int handle_base(char* new_base, int* old_base) {
 int handle_convert(char* encoded_base, char* encoded_val, int curr_base, int* out_val) {
     int encoded_base_val;
     int flag = is_valid_int(encoded_base, &encoded_base_val);
-    if (flag != -1) {
+    if (flag == -1) {
         fprintf(stderr, "Error base incorectly formatted\n");
         return -1;
     }
