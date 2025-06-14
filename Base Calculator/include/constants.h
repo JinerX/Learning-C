@@ -1,0 +1,8 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#define MAX_COMMAND_LENGTH 100
+#define MAX_ARGUMENTS 5
+#define MAX_NUMBER_SIZE 40
+
+#endif

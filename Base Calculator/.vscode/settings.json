@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        ".als.json": "jsonc",
+        "limits.h": "c",
+        "arithmetic.h": "c"
+    }
+}

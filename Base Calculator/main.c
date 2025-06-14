@@ -5,5 +5,6 @@
 
 int main() {
     run_cli();
+    struct current_status {};
     return 0;
 }

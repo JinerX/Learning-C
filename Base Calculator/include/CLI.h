@@ -1,15 +1,37 @@
 #if !defined(CLI_H)
 #define CLI_H
 
-#define MAX_COMMAND_LENGTH 100
-#define MAX_ARGUMENTS 5
+typedef struct {
+    char** commands;
+    int* base;
+} current_status;
+
+typedef int (*handler)(current_status*);
+typedef int (*arithmetic_function)(int, int);
+
+typedef struct {
+    char* function_name;
+    handler function;
+} function_map_element;
+
+typedef struct {
+    char* arithmetic_symbol;
+    arithmetic_function ar_func;
+} arithmetic_map_element;
+
 
 void run_cli();
 int split_into_commands(char* str, char* commands[]);
-int handle_base(char* new_base, int* old_base);
-int handle_convert(char* encoded_base, char* encoded_val, int curr_base, int* out_val);
-int handle_op(char* val_1, char* val_2, char* op, int* out_val);
+int handle_base(current_status*);
+int handle_convert(current_status*);
+int handle_op(current_status*);
+int handle_exit(current_status*);
+int handle_help(current_status*);
 int is_valid_int(const char* str, int* val_out);
+
+extern function_map_element function_mapping[]; // defined in CLI.c
+extern arithmetic_map_element arithmetic_mapping[];
+
 
 
 #endif // CLI_H
